@@ -14,11 +14,11 @@ Auditor de TI/GRC y estudiante de Ciberseguridad (PUCMM, en curso). Este reposit
 **Aprendizaje:** validación del control preventivo (deshabilitación de cuenta) y del control detectivo mediante el Event ID 4725, garantizando trazabilidad y no repudio.
 [Ver writeup »](./labs/lab-01-event-id-4725)
 
-### 2. Hardening de servidores con líneas base CIS
-**Objetivo:** bastionar servidores Linux (Ubuntu) y Windows aplicando líneas base CIS.
-**Herramientas:** Microsoft Azure · VMware · VirtualBox.
-**Aprendizaje:** reducción de la superficie de ataque y aplicación de baselines de seguridad sobre sistemas operativos.
-[Ver writeup »](./labs/lab-02-hardening-cis)
+### 2. Hardening de VM en Azure + Detección de Fuerza Bruta
+**Objetivo:** asegurar una VM Ubuntu en Azure con firewall sobre SSH y detectar un ataque de fuerza bruta.
+**Herramientas:** Microsoft Azure · Ubuntu Linux · Warp.
+**Aprendizaje:** reducción de la superficie de ataque vía firewall y análisis de logs en Azure para validar la detección del ataque.
+[Ver writeup »](./labs/lab-02-azure-hardening-bruteforce)
 
 ### 3. Wireshark — Análisis de tráfico de red
 **Objetivo:** analizar tráfico de red para identificar actividad sospechosa.
