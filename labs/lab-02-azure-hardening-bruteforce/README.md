@@ -1,7 +1,7 @@
 # Lab 02 — Hardening de VM en Azure + Detección de Ataque de Fuerza Bruta
 
 **Categoría:** Cloud Security · Hardening · Brute Force Detection · Log Analysis  
-**Entorno:** Microsoft Azure · Linux  
+**Entorno:** Microsoft Azure · Ubuntu Linux  
 **Fecha:** 2025  
 **Dificultad:** Básico-Intermedio
 
@@ -9,9 +9,9 @@
 
 ## 1. Objetivo
 
-- Desplegar y asegurar una máquina virtual en Azure aplicando reglas de firewall desde terminal.
+- Desplegar una máquina virtual Ubuntu en Microsoft Azure y asegurarla aplicando reglas de firewall sobre el puerto SSH desde la terminal.
 - Simular un ataque de fuerza bruta controlado contra la propia VM.
-- Analizar los logs generados y seguir el ciclo de vida de las alertas (alert triage).
+- Revisar y analizar los logs generados en Azure para validar la detección del ataque.
 
 ---
 
@@ -20,10 +20,9 @@
 | Componente | Detalle |
 |---|---|
 | Proveedor Cloud | Microsoft Azure |
-| Sistema Operativo | [Completar: ej. Ubuntu 22.04 LTS] |
+| Sistema Operativo | Ubuntu Linux |
 | Terminal Usada | Warp |
-| Herramientas de Firewall | [Completar: ej. UFW / Azure NSG] |
-| Herramienta de Ataque | [Completar: ej. Hydra / manual SSH] |
+| Servicio Objetivo | SSH (puerto 22) |
 
 ---
 
@@ -31,94 +30,32 @@
 
 ### Fase A — Despliegue de la VM en Azure
 
-> 📝 *Describe aquí los pasos seguidos: tipo de instancia, SO elegido, configuración inicial de red.*
+Se aprovisionó una máquina virtual con Ubuntu Linux en Microsoft Azure como entorno de laboratorio, habilitando el acceso remoto por SSH para su administración.
 
----
+### Fase B — Configuración del Firewall sobre SSH
 
-### Fase B — Hardening: Configuración del Firewall desde Terminal
-
-Los comandos utilizados para aplicar las reglas de firewall fueron:
-
-```bash
-# [Pegar aquí los comandos UFW o Azure CLI utilizados]
-# Ejemplo:
-ufw default deny incoming
-ufw default allow outgoing
-ufw allow 22/tcp
-ufw enable
-ufw status verbose
-```
-
-> 📝 *Explica las decisiones tomadas: qué puertos bloqueaste, por qué, y cuál era la superficie de ataque antes y después.*
-
----
+Desde la terminal Warp se gestionó la configuración del firewall aplicando reglas sobre el puerto SSH (22), controlando qué tráfico podía alcanzar el servicio de acceso remoto y reduciendo la superficie de ataque expuesta de la VM.
 
 ### Fase C — Simulación del Ataque de Fuerza Bruta
 
-> 📝 *Describe el ataque que ejecutaste: herramienta usada, protocolo objetivo (SSH, RDP), número de intentos, resultado.*
+Se ejecutó una simulación controlada de un ataque de fuerza bruta contra el servicio SSH de la propia VM, con el fin de generar intentos de autenticación fallidos y observar el comportamiento del sistema ante el ataque.
 
-```bash
-# [Pegar aquí el comando del ataque, si aplica]
-```
+### Fase D — Análisis de Logs en Azure
 
----
-
-### Fase D — Análisis de Logs y Follow-up de Alertas
-
-Ruta de los logs analizados:
-```
-[Completar: ej. /var/log/auth.log | /var/log/syslog | Azure Monitor]
-```
-
-Patrón identificado en los logs:
-
-```
-[Pegar aquí un extracto anonimizado del log que evidencia el ataque]
-```
-
-**Indicadores de Compromiso (IoCs) identificados:**
-- IP de origen del ataque: `[Completar]`
-- Número de intentos fallidos: `[Completar]`
-- Ventana temporal del ataque: `[Completar]`
-- Cuenta objetivo: `[Completar]`
+Se revisaron los logs disponibles en Azure para identificar la evidencia del ataque de fuerza bruta: los intentos de autenticación fallidos y el patrón de conexión repetida contra el puerto SSH, validando que la actividad maliciosa quedara registrada y fuera detectable.
 
 ---
 
-## 4. Evidencias
+## 4. Evidencia — Estado posterior al hardening (NSG)
 
-> 📁 Ver: `evidence/01-firewall-rules-before.png`  
-> 📁 Ver: `evidence/02-firewall-rules-after.png`  
-> 📁 Ver: `evidence/03-bruteforce-logs.png`  
-> 📁 Ver: `evidence/04-alert-triage.png`  
+Estado del Network Security Group `UBUNTUSECLAB-nsg` asociado a la interfaz de red de la VM tras aplicar el endurecimiento. La regla **DenyAllInBound** (prioridad 65500) bloquea todo el tráfico entrante no permitido explícitamente, dejando únicamente las reglas base de la red virtual y del balanceador de carga.
 
----
-
-## 5. Análisis y Conclusiones
-
-> 📝 *¿Qué demostró este laboratorio? ¿Qué hubiese pasado sin el hardening previo? ¿Las alertas fueron suficientemente claras para un analista?*
-
-**Hallazgos clave:**
-- [Completar con tus observaciones]
-
-**Controles implementados:**
-- ✅ Reducción de superficie de ataque mediante reglas de firewall granulares.
-- ✅ Detección del ataque a través del análisis de logs nativos.
-- ⚠️ [Agregar gaps o mejoras identificadas]
+![Reglas del NSG UBUNTUSECLAB-nsg tras el hardening, con DenyAllInBound activa](./evidence/nsg-deny-all-inbound.png)
 
 ---
 
-## 6. Lecciones Aprendidas
+## 5. Aprendizajes
 
-- [Completar con lo que aprendiste del proceso]
-
----
-
-## 7. Referencias
-
-- [Azure Network Security Groups](https://learn.microsoft.com/en-us/azure/virtual-network/network-security-groups-overview)
-- [Ubuntu UFW Documentation](https://help.ubuntu.com/community/UFW)
-- [NIST SP 800-115 — Technical Guide to Information Security Testing](https://csrc.nist.gov/publications/detail/sp/800-115/final)
-
----
-
-*Laboratorio realizado en entorno controlado con fines educativos. El ataque fue ejecutado contra infraestructura propia.*
+- Configuración práctica de reglas de firewall sobre el puerto SSH desde la terminal (Warp) para reducir la superficie de ataque de una VM en la nube.
+- Comprensión del rastro que deja un ataque de fuerza bruta en los registros y de cómo revisarlo desde la plataforma de Azure.
+- Refuerzo del enfoque defensivo: prevención (firewall/hardening) combinada con detección (análisis de logs).
